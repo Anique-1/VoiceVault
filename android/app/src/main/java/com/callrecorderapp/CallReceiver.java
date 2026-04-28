@@ -17,21 +17,33 @@ public class CallReceiver extends BroadcastReceiver {
                 .getBoolean("isEnabled", false);
         if (!isEnabled) return;
 
-        if (intent.getAction() != null && intent.getAction().equals("android.intent.action.PHONE_STATE")) {
-            String stateStr = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-            String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            int state = 0;
-            if (stateStr != null) {
-                if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                    state = TelephonyManager.CALL_STATE_IDLE;
-                } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                    state = TelephonyManager.CALL_STATE_OFFHOOK;
-                } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                    state = TelephonyManager.CALL_STATE_RINGING;
+        if (intent.getAction() != null) {
+            if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+                String outNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+                if (outNumber != null && !outNumber.isEmpty()) {
+                    savedNumber = outNumber;
                 }
-            }
+            } else if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
+                String stateStr = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+                String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                
+                if (number != null && !number.isEmpty()) {
+                    savedNumber = number;
+                }
 
-            onCallStateChanged(context, state, number);
+                int state = 0;
+                if (stateStr != null) {
+                    if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                        state = TelephonyManager.CALL_STATE_IDLE;
+                    } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                        state = TelephonyManager.CALL_STATE_OFFHOOK;
+                    } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                        state = TelephonyManager.CALL_STATE_RINGING;
+                    }
+                }
+
+                onCallStateChanged(context, state, savedNumber);
+            }
         }
     }
 
@@ -43,18 +55,18 @@ public class CallReceiver extends BroadcastReceiver {
         switch (state) {
             case TelephonyManager.CALL_STATE_RINGING:
                 isIncoming = true;
-                savedNumber = number;
+                if (number != null && !number.isEmpty()) savedNumber = number;
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 if (lastState != TelephonyManager.CALL_STATE_RINGING) {
                     isIncoming = false;
-                    savedNumber = number;
+                    if (number != null && !number.isEmpty()) savedNumber = number;
                 }
                 
                 // Start Recording
                 Intent startIntent = new Intent(context, CallRecorderService.class);
                 startIntent.setAction("START_RECORDING");
-                startIntent.putExtra("phoneNumber", savedNumber);
+                startIntent.putExtra("phoneNumber", savedNumber != null && !savedNumber.isEmpty() ? savedNumber : "Unknown");
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     context.startForegroundService(startIntent);
                 } else {

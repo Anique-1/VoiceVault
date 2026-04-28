@@ -18,7 +18,7 @@ VoiceVault is a premium, high-quality SIM call recording application built with 
 A handy automated script is provided to generate a production-ready APK in seconds!
 1. Double-click the `build_apk.bat` file in the root directory.
 2. The script will automatically clean the gradle cache, assemble the Release version, and copy the final output.
-3. Your final installable app will appear in the root folder as **`VoiceVault_v1.0.0.apk`**.
+3. Your final installable app will appear in the root folder as **`VoiceVault_v1.0.1.apk`**.
 
 ## 💻 Development
 To run the app locally on an emulator or connected device:

@@ -94,6 +94,19 @@ public class CallRecorderModule extends ReactContextBaseJavaModule {
                 mediaPlayer.release();
             }
             mediaPlayer = new MediaPlayer();
+            
+            // Ensure audio routes through media speaker
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                mediaPlayer.setAudioAttributes(
+                    new android.media.AudioAttributes.Builder()
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                        .build()
+                );
+            } else {
+                mediaPlayer.setAudioStreamType(android.media.AudioManager.STREAM_MUSIC);
+            }
+
             mediaPlayer.setDataSource(path);
             mediaPlayer.prepare();
             mediaPlayer.start();
@@ -103,8 +116,8 @@ public class CallRecorderModule extends ReactContextBaseJavaModule {
             });
             
             promise.resolve(true);
-        } catch (IOException e) {
-            promise.reject("ERROR", e.getMessage());
+        } catch (Exception e) {
+            promise.reject("ERROR", "Playback failed: " + e.getMessage());
         }
     }
 

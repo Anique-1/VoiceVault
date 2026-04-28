@@ -98,6 +98,7 @@ const App = () => {
           PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
           PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
           PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
+          PermissionsAndroid.PERMISSIONS.PROCESS_OUTGOING_CALLS,
         ];
 
         if (Number(Platform.Version) >= 33) {
