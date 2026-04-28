@@ -1,0 +1,43 @@
+# Node/NPM
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# React Native specific
+.expo/
+.react/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/app/.cxx/
+*.apk
+*.aab
+*.ap_
+
+# iOS
+ios/Pods/
+ios/build/
+ios/Index/
+*.xcworkspace
+
+# IDEs and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment Variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Keystores (SECURITY: Never commit release keystores)
+*.jks
+*.keystore
+
+# Build Scripts Output
+VoiceVault_v*.apk
